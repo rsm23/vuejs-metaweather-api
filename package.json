@@ -1,0 +1,27 @@
+{
+  "name": "weather-gitesoft",
+  "version": "1.0.0",
+  "description": "Weather App Gite-Soft",
+  "author": "Rahmani Saif El Moulouk <cool2309@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "production": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "popper.js": "^1.12",
+    "axios": "^0.18",
+    "laravel-mix": "^2.1.11",
+    "jquery": "^3.2",
+    "vue": "^2.5.7",
+    "vue-router": "^3.0.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.24.5",
+    "browser-sync-webpack-plugin": "2.0.1"
+  }
+}
