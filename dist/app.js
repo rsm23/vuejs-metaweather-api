@@ -13989,24 +13989,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_router__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__routes__ = __webpack_require__(49);
-// window.Vue = require('vue');
-//
-// /**
-//  * Next, we will create a fresh Vue application instance and attach it to
-//  * the page. Then, you may begin adding components to this application
-//  * or customize the JavaScript scaffolding to fit your unique needs.
-//  */
-//
-// import VueRouter from 'vue-router';
-//
-// Vue.use(VueRouter);
-//
-// Vue.component('app', require('./components/App.vue'));
-// Vue.component('weather', require('./components/Weather.vue'));
-//
-// const app = new Vue({
-//     el: '#app'
-// });
 window.axios = __webpack_require__(17);
 
 window.axios.defaults.headers.common = {
@@ -14022,6 +14004,9 @@ try {
 
 
 
+
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('app', __webpack_require__(38));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('weather', __webpack_require__(42));
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
 var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
@@ -32772,10 +32757,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mounted: function mounted() {}
+  data: function data() {
+    return {
+      cities: ["Istanbul", "Berlin", "London", "Helsinki", "Dublin", "Vancouver"]
+    };
+  }
 });
 
 /***/ }),
@@ -32786,7 +32777,13 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" })
+  return _c(
+    "div",
+    { staticClass: "container" },
+    _vm._l(_vm.cities, function(city) {
+      return _c("div", [_c("weather", { attrs: { city: city } })], 1)
+    })
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -32863,8 +32860,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['city'],
+  data: function data() {
+    return {
+      city_details: false
+    };
+  },
+  mounted: function mounted() {
+    var self = this;
+    axios.get('/weather.php?command=search&keyword=' + self.city).then(function (response) {
+      axios.get('weather.php?command=location&woeid=' + response.data[0]['woeid']).then(function (response) {
+        console.log(response.data);
+        self.city_details = response.data;
+      });
+    });
+  }
+});
 
 /***/ }),
 /* 44 */
@@ -32874,7 +32896,41 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" })
+  return _c("div", { staticClass: "container mt-5 pt-5" }, [
+    _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "card-body" }, [
+        _c("h5", {
+          staticClass: "card-title",
+          domProps: { textContent: _vm._s(_vm.city_details.title) }
+        }),
+        _vm._v(" "),
+        _vm.city_details
+          ? _c("h6", {
+              staticClass: "card-subtitle mb-2 text-muted",
+              domProps: {
+                textContent: _vm._s(
+                  Math.round(_vm.city_details.consolidated_weather[0].max_temp)
+                )
+              }
+            })
+          : _vm._e(),
+        _vm._v(" "),
+        _c("p", { staticClass: "card-text" }, [
+          _vm._v(
+            "Some quick example text to build on the card title and make up the bulk of the\n                card's content."
+          )
+        ]),
+        _vm._v(" "),
+        _c("a", { staticClass: "card-link", attrs: { href: "#" } }, [
+          _vm._v("Card link")
+        ]),
+        _vm._v(" "),
+        _c("a", { staticClass: "card-link", attrs: { href: "#" } }, [
+          _vm._v("Another link")
+        ])
+      ])
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
