@@ -32869,13 +32869,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['city'],
   data: function data() {
     return {
-      city_details: false
+      city_details: false,
+      icon_name: null
     };
+  },
+
+  computed: {
+    icon: function icon() {
+      return 'background: url("https://www.metaweather.com/static/img/weather/png/' + this.icon_name + '.png") no-repeat;background-position-x: 100%;background-position-y: 40%;background-size: 14%;';
+    }
   },
   mounted: function mounted() {
     var self = this;
@@ -32883,6 +32896,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       axios.get('weather.php?command=location&woeid=' + response.data[0]['woeid']).then(function (response) {
         console.log(response.data);
         self.city_details = response.data;
+        self.icon_name = response.data.consolidated_weather[0].weather_state_abbr;
       });
     });
   }
@@ -32896,40 +32910,66 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container mt-5 pt-5" }, [
-    _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "card-body" }, [
-        _c("h5", {
-          staticClass: "card-title",
-          domProps: { textContent: _vm._s(_vm.city_details.title) }
-        }),
-        _vm._v(" "),
-        _vm.city_details
-          ? _c("h6", {
-              staticClass: "card-subtitle mb-2 text-muted",
-              domProps: {
-                textContent: _vm._s(
-                  Math.round(_vm.city_details.consolidated_weather[0].max_temp)
-                )
-              }
-            })
-          : _vm._e(),
-        _vm._v(" "),
-        _c("p", { staticClass: "card-text" }, [
-          _vm._v(
-            "Some quick example text to build on the card title and make up the bulk of the\n                card's content."
-          )
-        ]),
-        _vm._v(" "),
-        _c("a", { staticClass: "card-link", attrs: { href: "#" } }, [
-          _vm._v("Card link")
-        ]),
-        _vm._v(" "),
-        _c("a", { staticClass: "card-link", attrs: { href: "#" } }, [
-          _vm._v("Another link")
+  return _c("div", { staticClass: "container" }, [
+    _vm.city_details
+      ? _c("div", { staticClass: "card", style: _vm.icon }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("h5", {
+              staticClass: "card-title",
+              domProps: { textContent: _vm._s(_vm.city_details.title) }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "card_subtitle" }, [
+              _c("h6", {
+                staticClass: "text-muted",
+                domProps: {
+                  textContent: _vm._s(
+                    "Temperature : " +
+                      Math.round(
+                        _vm.city_details.consolidated_weather[0].the_temp
+                      )
+                  )
+                }
+              }),
+              _vm._v(" "),
+              _c("span", {
+                staticClass: "text-info",
+                domProps: {
+                  textContent: _vm._s(
+                    _vm.city_details.consolidated_weather[0].weather_state_name
+                  )
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-text" }, [
+              _c("span", {
+                staticClass: "lead",
+                domProps: {
+                  textContent: _vm._s(
+                    "Max : " +
+                      Math.round(
+                        _vm.city_details.consolidated_weather[0].max_temp
+                      )
+                  )
+                }
+              }),
+              _vm._v(" -\n                "),
+              _c("span", {
+                staticClass: "lead",
+                domProps: {
+                  textContent: _vm._s(
+                    "Min : " +
+                      Math.round(
+                        _vm.city_details.consolidated_weather[0].min_temp
+                      )
+                  )
+                }
+              })
+            ])
+          ])
         ])
-      ])
-    ])
+      : _vm._e()
   ])
 }
 var staticRenderFns = []

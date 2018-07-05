@@ -1,13 +1,19 @@
 <template>
-    <div class="container mt-5 pt-5">
-        <div class="card">
+    <div class="container">
+        <div class="card" v-if="city_details" :style="icon">
             <div class="card-body">
                 <h5 class="card-title" v-text="city_details.title"></h5>
-                <h6 class="card-subtitle mb-2 text-muted" v-if="city_details" v-text="Math.round(city_details.consolidated_weather[0].max_temp)"></h6>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                    card's content.</p>
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
+                <div class="card_subtitle">
+                    <h6 class="text-muted"
+                        v-text="'Temperature : ' + Math.round(city_details.consolidated_weather[0].the_temp)"></h6>
+                    <span v-text="city_details.consolidated_weather[0].weather_state_name" class="text-info"></span>
+                </div>
+                <div class="card-text">
+                        <span class="lead"
+                              v-text="'Max : '+Math.round(city_details.consolidated_weather[0].max_temp)"></span> -
+                    <span class="lead"
+                          v-text="'Min : '+Math.round(city_details.consolidated_weather[0].min_temp)"> </span>
+                </div>
             </div>
         </div>
     </div>
@@ -19,7 +25,13 @@
     data() {
       return {
         city_details: false,
+        icon_name: null
       };
+    },
+    computed: {
+      icon() {
+        return 'background: url("https://www.metaweather.com/static/img/weather/png/' + this.icon_name + '.png") no-repeat;background-position-x: 100%;background-position-y: 40%;background-size: 14%;';
+      }
     },
     mounted() {
       let self = this;
@@ -29,6 +41,7 @@
                 .then(function (response) {
                   console.log(response.data);
                   self.city_details = response.data;
+                  self.icon_name = response.data.consolidated_weather[0].weather_state_abbr;
                 });
           });
     },
