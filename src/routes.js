@@ -1,6 +1,6 @@
 import App from './components/App.vue';
-import Weather from './components/Weather.vue';
+import City from './components/City.vue';
 export const routes = [
   { path: '/', component: App, name: 'Home' },
-  { path: '/weather', component: Weather, name: 'Weather' }
+  { path: '/weather/:woeid', component: City, name: 'City' }
 ];

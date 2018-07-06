@@ -32890,15 +32890,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return 'background: url("https://www.metaweather.com/static/img/weather/png/' + this.icon_name + '.png") no-repeat;background-position-x: 100%;background-position-y: 40%;background-size: 14%;';
     }
   },
-  mounted: function mounted() {
+  created: function created() {
     var self = this;
-    axios.get('/weather.php?command=search&keyword=' + self.city).then(function (response) {
-      axios.get('weather.php?command=location&woeid=' + response.data[0]['woeid']).then(function (response) {
+    if (self.city) {
+      this.getWoeid(self.city);
+    }
+  },
+
+  methods: {
+    getCityDetails: function getCityDetails(woeid) {
+      console.log("details");
+      var self = this;
+      axios.get('weather.php?command=location&woeid=' + woeid).then(function (response) {
         console.log(response.data);
         self.city_details = response.data;
         self.icon_name = response.data.consolidated_weather[0].weather_state_abbr;
       });
-    });
+    },
+    getWoeid: function getWoeid(city) {
+      var self = this;
+      axios.get('/weather.php?command=search&keyword=' + city).then(function (response) {
+        self.getCityDetails(response.data[0]['woeid']);
+      });
+    },
+    redirectCity: function redirectCity(woeid) {
+      this.$router.push('/weather/' + woeid);
+    }
   }
 });
 
@@ -32912,63 +32929,76 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _vm.city_details
-      ? _c("div", { staticClass: "card", style: _vm.icon }, [
-          _c("div", { staticClass: "card-body" }, [
-            _c("h5", {
-              staticClass: "card-title",
-              domProps: { textContent: _vm._s(_vm.city_details.title) }
-            }),
-            _vm._v(" "),
-            _c("div", { staticClass: "card_subtitle" }, [
-              _c("h6", {
-                staticClass: "text-muted",
-                domProps: {
-                  textContent: _vm._s(
-                    "Temperature : " +
-                      Math.round(
-                        _vm.city_details.consolidated_weather[0].the_temp
-                      )
-                  )
-                }
+      ? _c(
+          "div",
+          {
+            staticClass: "card",
+            style: _vm.icon,
+            on: {
+              click: function($event) {
+                _vm.redirectCity(_vm.city_details.woeid)
+              }
+            }
+          },
+          [
+            _c("div", { staticClass: "card-body" }, [
+              _c("h5", {
+                staticClass: "card-title",
+                domProps: { textContent: _vm._s(_vm.city_details.title) }
               }),
               _vm._v(" "),
-              _c("span", {
-                staticClass: "text-info",
-                domProps: {
-                  textContent: _vm._s(
-                    _vm.city_details.consolidated_weather[0].weather_state_name
-                  )
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-text" }, [
-              _c("span", {
-                staticClass: "lead",
-                domProps: {
-                  textContent: _vm._s(
-                    "Max : " +
-                      Math.round(
-                        _vm.city_details.consolidated_weather[0].max_temp
-                      )
-                  )
-                }
-              }),
-              _vm._v(" -\n                "),
-              _c("span", {
-                staticClass: "lead",
-                domProps: {
-                  textContent: _vm._s(
-                    "Min : " +
-                      Math.round(
-                        _vm.city_details.consolidated_weather[0].min_temp
-                      )
-                  )
-                }
-              })
+              _c("div", { staticClass: "card_subtitle" }, [
+                _c("h6", {
+                  staticClass: "text-muted",
+                  domProps: {
+                    textContent: _vm._s(
+                      "Temperature : " +
+                        Math.round(
+                          _vm.city_details.consolidated_weather[0].the_temp
+                        )
+                    )
+                  }
+                }),
+                _vm._v(" "),
+                _c("span", {
+                  staticClass: "text-info",
+                  domProps: {
+                    textContent: _vm._s(
+                      _vm.city_details.consolidated_weather[0]
+                        .weather_state_name
+                    )
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-text" }, [
+                _c("span", {
+                  staticClass: "lead",
+                  domProps: {
+                    textContent: _vm._s(
+                      "Max : " +
+                        Math.round(
+                          _vm.city_details.consolidated_weather[0].max_temp
+                        )
+                    )
+                  }
+                }),
+                _vm._v(" -\n                "),
+                _c("span", {
+                  staticClass: "lead",
+                  domProps: {
+                    textContent: _vm._s(
+                      "Min : " +
+                        Math.round(
+                          _vm.city_details.consolidated_weather[0].min_temp
+                        )
+                    )
+                  }
+                })
+              ])
             ])
-          ])
-        ])
+          ]
+        )
       : _vm._e()
   ])
 }
@@ -32994,11 +33024,104 @@ if (false) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return routes; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_App_vue__ = __webpack_require__(38);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_App_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_App_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Weather_vue__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Weather_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_Weather_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_City_vue__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_City_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_City_vue__);
 
 
-var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_0__components_App_vue___default.a, name: 'Home' }, { path: '/weather', component: __WEBPACK_IMPORTED_MODULE_1__components_Weather_vue___default.a, name: 'Weather' }];
+var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_0__components_App_vue___default.a, name: 'Home' }, { path: '/weather/:woeid', component: __WEBPACK_IMPORTED_MODULE_1__components_City_vue___default.a, name: 'City' }];
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(11)
+/* script */
+var __vue_script__ = __webpack_require__(55)
+/* template */
+var __vue_template__ = __webpack_require__(57)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "src/components/City.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-fd46cfca", Component.options)
+  } else {
+    hotAPI.reload("data-v-fd46cfca", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      woeid: this.$route.params.woeid
+    };
+  }
+});
+
+/***/ }),
+/* 56 */,
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [_c("h1", { domProps: { textContent: _vm._s(_vm.woeid) } })])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-fd46cfca", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

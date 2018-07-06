@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="card" v-if="city_details" :style="icon">
+        <div class="card" v-if="city_details" :style="icon" @click="redirectCity(city_details.woeid)">
             <div class="card-body">
                 <h5 class="card-title" v-text="city_details.title"></h5>
                 <div class="card_subtitle">
@@ -33,17 +33,33 @@
         return 'background: url("https://www.metaweather.com/static/img/weather/png/' + this.icon_name + '.png") no-repeat;background-position-x: 100%;background-position-y: 40%;background-size: 14%;';
       }
     },
-    mounted() {
+    created() {
       let self = this;
-      axios.get('/weather.php?command=search&keyword=' + self.city)
-          .then(function (response) {
-            axios.get('weather.php?command=location&woeid=' + response.data[0]['woeid'])
-                .then(function (response) {
-                  console.log(response.data);
-                  self.city_details = response.data;
-                  self.icon_name = response.data.consolidated_weather[0].weather_state_abbr;
-                });
-          });
+      if(self.city){
+        this.getWoeid(self.city)
+      }
     },
+    methods: {
+      getCityDetails(woeid) {
+        console.log("details");
+        let self = this;
+        axios.get('weather.php?command=location&woeid=' + woeid)
+            .then(function (response) {
+              console.log(response.data);
+              self.city_details = response.data;
+              self.icon_name = response.data.consolidated_weather[0].weather_state_abbr;
+            });
+      },
+      getWoeid(city){
+        let self = this;
+        axios.get('/weather.php?command=search&keyword=' + city)
+            .then(function (response) {
+              self.getCityDetails(response.data[0]['woeid']);
+            });
+      },
+      redirectCity(woeid){
+        this.$router.push('/weather/'+woeid)
+      }
+    }
   }
 </script>
