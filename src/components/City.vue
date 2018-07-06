@@ -1,6 +1,9 @@
 <template>
     <div>
-        <h1 v-text="woeid"></h1>
+        <h2 class="text-success text-center" v-if="loading">Loading Data</h2>
+        <div class="container mt-5">
+            <weather :woeid="this.woeid" :consolidated="true" @notLoading="removeLoading"></weather>
+        </div>
     </div>
 </template>
 
@@ -8,7 +11,14 @@
   export default {
     data(){
       return{
-        woeid : this.$route.params.woeid
+        woeid : this.$route.params.woeid,
+        loading:true
+      }
+    },
+    methods:{
+      removeLoading(){
+        self = this;
+        self.loading = false
       }
     }
   }

@@ -32759,13 +32759,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      cities: ["Istanbul", "Berlin", "London", "Helsinki", "Dublin", "Vancouver"]
+      cities: ["Istanbul", "Berlin", "London", "Helsinki", "Dublin", "Vancouver"],
+      loading: true
     };
+  },
+
+  methods: {
+    removeLoading: function removeLoading() {
+      self = this;
+      self.loading = false;
+    }
   }
 });
 
@@ -32780,9 +32788,27 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "container" },
-    _vm._l(_vm.cities, function(city) {
-      return _c("div", [_c("weather", { attrs: { city: city } })], 1)
-    })
+    [
+      _vm.loading
+        ? _c("h2", { staticClass: "text-success text-center" }, [
+            _vm._v("Loading Data")
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm._l(_vm.cities, function(city) {
+        return _c(
+          "div",
+          [
+            _c("weather", {
+              attrs: { city: city },
+              on: { notLoading: _vm.removeLoading }
+            })
+          ],
+          1
+        )
+      })
+    ],
+    2
   )
 }
 var staticRenderFns = []
@@ -32875,13 +32901,51 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['city'],
+  props: ['city', 'woeid', 'consolidated'],
   data: function data() {
     return {
       city_details: false,
-      icon_name: null
+      icon_name: null,
+      loading: true,
+      consolidatedWeather: false
     };
   },
 
@@ -32890,19 +32954,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return 'background: url("https://www.metaweather.com/static/img/weather/png/' + this.icon_name + '.png") no-repeat;background-position-x: 100%;background-position-y: 40%;background-size: 14%;';
     }
   },
+  watch: {
+    city_details: function city_details(val) {
+      var self = this;
+      if (val) {
+        self.$emit('notLoading');
+      }
+    }
+  },
   created: function created() {
     var self = this;
     if (self.city) {
       this.getWoeid(self.city);
+    } else if (self.woeid) {
+      this.getCityDetails(self.woeid);
     }
   },
 
   methods: {
     getCityDetails: function getCityDetails(woeid) {
-      console.log("details");
       var self = this;
-      axios.get('weather.php?command=location&woeid=' + woeid).then(function (response) {
-        console.log(response.data);
+      axios.get('/weather.php?command=location&woeid=' + woeid).then(function (response) {
+        var arr = response.data.consolidated_weather;
+        self.consolidatedWeather = arr.splice(1, arr.length);
         self.city_details = response.data;
         self.icon_name = response.data.consolidated_weather[0].weather_state_abbr;
       });
@@ -32915,6 +32989,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     redirectCity: function redirectCity(woeid) {
       this.$router.push('/weather/' + woeid);
+    },
+    getIcon: function getIcon(iconName) {
+      return 'background: url(https://www.metaweather.com/static/img/weather/png/' + iconName + '.png) no-repeat;background-position-x:100%;background-position-y: 40%;background-size: 14%;';
+    },
+    getDate: function getDate(date) {
+      var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      var d = new Date(date);
+      var year = date.slice(0, 4);
+      var currentDate = date.slice(8, 10);
+      return days[d.getDay()] + ', ' + currentDate + ' ' + months[d.getMonth()] + ' ' + year;
     }
   }
 });
@@ -32927,82 +33012,182 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _vm.city_details
-      ? _c(
-          "div",
-          {
-            staticClass: "card",
-            style: _vm.icon,
-            on: {
-              click: function($event) {
-                _vm.redirectCity(_vm.city_details.woeid)
+  return _c(
+    "div",
+    { staticClass: "container" },
+    [
+      _vm.city_details && _vm.consolidated
+        ? _c("h1", {
+            staticClass: "text-center",
+            domProps: { textContent: _vm._s(_vm.city_details.title) }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.city_details
+        ? _c(
+            "div",
+            {
+              staticClass: "card",
+              class: { "text-white bg-primary mb-5": _vm.consolidated },
+              style: _vm.icon,
+              on: {
+                click: function($event) {
+                  _vm.redirectCity(_vm.city_details.woeid)
+                }
               }
-            }
-          },
-          [
-            _c("div", { staticClass: "card-body" }, [
-              _c("h5", {
-                staticClass: "card-title",
-                domProps: { textContent: _vm._s(_vm.city_details.title) }
-              }),
-              _vm._v(" "),
-              _c("div", { staticClass: "card_subtitle" }, [
-                _c("h6", {
-                  staticClass: "text-muted",
-                  domProps: {
-                    textContent: _vm._s(
-                      "Temperature : " +
-                        Math.round(
-                          _vm.city_details.consolidated_weather[0].the_temp
-                        )
-                    )
-                  }
-                }),
+            },
+            [
+              _c("div", { staticClass: "card-body" }, [
+                !_vm.consolidated
+                  ? _c("h5", {
+                      staticClass: "card-title",
+                      domProps: { textContent: _vm._s(_vm.city_details.title) }
+                    })
+                  : _vm._e(),
                 _vm._v(" "),
-                _c("span", {
-                  staticClass: "text-info",
-                  domProps: {
-                    textContent: _vm._s(
-                      _vm.city_details.consolidated_weather[0]
-                        .weather_state_name
-                    )
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "card-text" }, [
-                _c("span", {
-                  staticClass: "lead",
-                  domProps: {
-                    textContent: _vm._s(
-                      "Max : " +
-                        Math.round(
-                          _vm.city_details.consolidated_weather[0].max_temp
-                        )
-                    )
-                  }
-                }),
-                _vm._v(" -\n                "),
-                _c("span", {
-                  staticClass: "lead",
-                  domProps: {
-                    textContent: _vm._s(
-                      "Min : " +
-                        Math.round(
-                          _vm.city_details.consolidated_weather[0].min_temp
-                        )
-                    )
-                  }
-                })
+                _vm.consolidated
+                  ? _c("h3", { staticClass: "card-title text-center" }, [
+                      _vm._v("Today")
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("div", { staticClass: "card_subtitle" }, [
+                  _c("h6", {
+                    domProps: {
+                      textContent: _vm._s(
+                        "Temperature : " +
+                          Math.round(
+                            _vm.city_details.consolidated_weather[0].the_temp
+                          ) +
+                          "°C"
+                      )
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("span", {
+                    domProps: {
+                      textContent: _vm._s(
+                        _vm.city_details.consolidated_weather[0]
+                          .weather_state_name
+                      )
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-text" }, [
+                  _c("div", { staticClass: "row" }, [
+                    _c("div", { staticClass: "col-md-6" }, [
+                      _c("span", {
+                        staticClass: "lead",
+                        domProps: {
+                          textContent: _vm._s(
+                            "Max : " +
+                              Math.round(
+                                _vm.city_details.consolidated_weather[0]
+                                  .max_temp
+                              ) +
+                              "°C - Min : " +
+                              Math.round(
+                                _vm.city_details.consolidated_weather[0]
+                                  .min_temp
+                              ) +
+                              "°C"
+                          )
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _vm._m(0)
+                  ])
+                ])
               ])
+            ]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm._l(_vm.consolidatedWeather, function(day) {
+        return _vm.consolidated
+          ? _c("div", [
+              _c(
+                "div",
+                {
+                  staticClass: "card mb-2",
+                  style: _vm.getIcon(day.weather_state_abbr)
+                },
+                [
+                  _c("div", { staticClass: "card-body" }, [
+                    _c("h5", {
+                      staticClass: "card-title",
+                      domProps: {
+                        textContent: _vm._s(_vm.getDate(day.applicable_date))
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card_subtitle" }, [
+                      _c("h6", {
+                        staticClass: "text-muted",
+                        domProps: {
+                          textContent: _vm._s(
+                            "Temperature : " + Math.round(day.the_temp) + "°C"
+                          )
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("span", {
+                        staticClass: "text-info",
+                        domProps: {
+                          textContent: _vm._s(day.weather_state_name)
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-text" }, [
+                      _c("div", { staticClass: "row" }, [
+                        _c("div", { staticClass: "col-md-6" }, [
+                          _c("span", {
+                            staticClass: "lead",
+                            domProps: {
+                              textContent: _vm._s(
+                                "Max : " + Math.round(day.max_temp) + "°C"
+                              )
+                            }
+                          }),
+                          _vm._v(
+                            "\n                            -\n                            "
+                          ),
+                          _c("span", {
+                            staticClass: "lead",
+                            domProps: {
+                              textContent: _vm._s(
+                                "Min : " + Math.round(day.min_temp) + "°C"
+                              )
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-6" })
+                      ])
+                    ])
+                  ])
+                ]
+              )
             ])
-          ]
-        )
-      : _vm._e()
-  ])
+          : _vm._e()
+      })
+    ],
+    2
+  )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-6" }, [
+      _c("h3", { staticClass: "text-danger text-center" }, [_vm._v("Today")])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -33093,12 +33278,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      woeid: this.$route.params.woeid
+      woeid: this.$route.params.woeid,
+      loading: true
     };
+  },
+
+  methods: {
+    removeLoading: function removeLoading() {
+      self = this;
+      self.loading = false;
+    }
   }
 });
 
@@ -33111,7 +33307,25 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("h1", { domProps: { textContent: _vm._s(_vm.woeid) } })])
+  return _c("div", [
+    _vm.loading
+      ? _c("h2", { staticClass: "text-success text-center" }, [
+          _vm._v("Loading Data")
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "container mt-5" },
+      [
+        _c("weather", {
+          attrs: { woeid: this.woeid, consolidated: true },
+          on: { notLoading: _vm.removeLoading }
+        })
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
