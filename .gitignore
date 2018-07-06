@@ -1,3 +1,8 @@
+.DS_Store
+Thumbs.db
+.lock
+.log
+.tmp
 node_modules
 .idea
 dist/*
