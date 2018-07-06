@@ -14005,7 +14005,7 @@ try {
 
 
 
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('app', __webpack_require__(38));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('search', __webpack_require__(58));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('weather', __webpack_require__(42));
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
@@ -32760,6 +32760,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -32789,6 +32790,8 @@ var render = function() {
     "div",
     { staticClass: "container" },
     [
+      _c("search"),
+      _vm._v(" "),
       _vm.loading
         ? _c("h2", { staticClass: "text-success text-center" }, [
             _vm._v("Loading Data")
@@ -32937,6 +32940,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['city', 'woeid', 'consolidated'],
@@ -32945,7 +32951,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       city_details: false,
       icon_name: null,
       loading: true,
-      consolidatedWeather: false
+      consolidatedWeather: false,
+      notFound: false
     };
   },
 
@@ -32984,7 +32991,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     getWoeid: function getWoeid(city) {
       var self = this;
       axios.get('/weather.php?command=search&keyword=' + city).then(function (response) {
-        self.getCityDetails(response.data[0]['woeid']);
+        if (response.data.length > 0) {
+          self.getCityDetails(response.data[0]['woeid']);
+        } else {
+          self.notFound = true;
+        }
       });
     },
     redirectCity: function redirectCity(woeid) {
@@ -33097,7 +33108,13 @@ var render = function() {
                       })
                     ]),
                     _vm._v(" "),
-                    _vm._m(0)
+                    _c("div", { staticClass: "col-md-6" }, [
+                      !_vm.consolidated
+                        ? _c("h3", { staticClass: "text-danger text-center" }, [
+                            _vm._v("Today")
+                          ])
+                        : _vm._e()
+                    ])
                   ])
                 ])
               ])
@@ -33173,21 +33190,25 @@ var render = function() {
               )
             ])
           : _vm._e()
-      })
+      }),
+      _vm._v(" "),
+      _vm.notFound
+        ? _c("h2", {
+            staticClass: "text-center mt-3",
+            domProps: {
+              textContent: _vm._s(
+                "No results were found for : (" +
+                  _vm.city +
+                  "). Try changing the keyword!"
+              )
+            }
+          })
+        : _vm._e()
     ],
     2
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6" }, [
-      _c("h3", { staticClass: "text-danger text-center" }, [_vm._v("Today")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -33211,9 +33232,12 @@ if (false) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_App_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_App_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_City_vue__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_City_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_City_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Search_vue__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Search_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_Search_vue__);
 
 
-var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_0__components_App_vue___default.a, name: 'Home' }, { path: '/weather/:woeid', component: __WEBPACK_IMPORTED_MODULE_1__components_City_vue___default.a, name: 'City' }];
+
+var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_0__components_App_vue___default.a, name: 'Home' }, { path: '/weather/:woeid', component: __WEBPACK_IMPORTED_MODULE_1__components_City_vue___default.a, name: 'City' }, { path: '/search/:keyword', component: __WEBPACK_IMPORTED_MODULE_2__components_Search_vue___default.a, name: 'Search' }];
 
 /***/ }),
 /* 50 */
@@ -33334,6 +33358,172 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-fd46cfca", module.exports)
+  }
+}
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(11)
+/* script */
+var __vue_script__ = __webpack_require__(61)
+/* template */
+var __vue_template__ = __webpack_require__(63)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "src/components/Search.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-7cb41050", Component.options)
+  } else {
+    hotAPI.reload("data-v-7cb41050", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 59 */,
+/* 60 */,
+/* 61 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      query: this.$route.params.keyword,
+      keyword: ''
+    };
+  },
+
+  methods: {
+    Search: function Search() {
+      var self = this;
+      this.$router.push('/search/' + self.keyword);
+    }
+  }
+});
+
+/***/ }),
+/* 62 */,
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "container mb-4 mt-4" }, [
+        _c(
+          "form",
+          {
+            staticClass: "form-inline col-md-8 m-auto",
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.Search($event)
+              }
+            }
+          },
+          [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.keyword,
+                  expression: "keyword"
+                }
+              ],
+              staticClass: "form-control w-75",
+              attrs: {
+                type: "search",
+                placeholder: "Search",
+                "aria-label": "Search"
+              },
+              domProps: { value: _vm.keyword },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.keyword = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-outline-success w-25",
+                attrs: { type: "submit" }
+              },
+              [_vm._v("\n                Search\n            ")]
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _vm.query ? _c("weather", { attrs: { city: _vm.query } }) : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-7cb41050", module.exports)
   }
 }
 

@@ -16,7 +16,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router';
 import {routes} from './routes';
 
-Vue.component('app', require('./components/App.vue'));
+Vue.component('search', require('./components/Search.vue'));
 Vue.component('weather', require('./components/Weather.vue'));
 
 Vue.use(VueRouter);

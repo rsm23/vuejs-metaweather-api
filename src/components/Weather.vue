@@ -18,7 +18,7 @@
 
                         </div>
                         <div class="col-md-6">
-                            <h3 class="text-danger text-center">Today</h3>
+                            <h3 class="text-danger text-center" v-if="!consolidated">Today</h3>
                         </div>
                     </div>
                 </div>
@@ -52,6 +52,9 @@
                 </div>
             </div>
         </div>
+
+        <!--Not Found Exception-->
+        <h2 v-if="notFound" class="text-center mt-3" v-text="'No results were found for : ('+city+'). Try changing the keyword!'"></h2>
     </div>
 </template>
 
@@ -64,6 +67,7 @@
         icon_name: null,
         loading: true,
         consolidatedWeather: false,
+        notFound : false
       };
     },
     computed: {
@@ -103,7 +107,11 @@
         let self = this;
         axios.get('/weather.php?command=search&keyword=' + city)
             .then(function (response) {
-              self.getCityDetails(response.data[0]['woeid']);
+              if(response.data.length > 0){
+                self.getCityDetails(response.data[0]['woeid']);
+              }else{
+                self.notFound = true;
+              }
             });
       },
       redirectCity(woeid) {

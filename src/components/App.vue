@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <search></search>
         <h2 class="text-success text-center" v-if="loading">Loading Data</h2>
         <div  v-for="city in cities">
             <weather :city="city" @notLoading="removeLoading"></weather>
