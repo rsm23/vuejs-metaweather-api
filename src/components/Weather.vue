@@ -1,20 +1,20 @@
 <template>
     <div class="container">
         <h1 v-if="city_details && consolidated" v-text="city_details.title" class="text-center"></h1>
-        <div class="card" v-if="city_details" :style="icon" @click="redirectCity(city_details.woeid)"
-             :class="{'text-white bg-primary mb-5':consolidated}">
+        <div class="card mb-5" v-if="city_details" :style="icon" @click="redirectCity(city_details.woeid)"
+             :class="{'text-white bg-primary mb-5':consolidated}" style="cursor: pointer;">
             <div class="card-body">
                 <h5 class="card-title" v-text="city_details.title" v-if="!consolidated"></h5>
                 <h3 class="card-title text-center" v-if="consolidated">Today</h3>
                 <div class="card_subtitle">
-                    <h6 v-text="'Temperature : ' + Math.round(city_details.consolidated_weather[0].the_temp) + '°C'"></h6>
+                    <h6 v-text="`Temperature : ${Math.round(city_details.consolidated_weather[0].the_temp)} °C`"></h6>
                     <span v-text="city_details.consolidated_weather[0].weather_state_name"></span>
                 </div>
                 <div class="card-text">
                     <div class="row">
                         <div class="col-md-6">
                                 <span class="lead"
-                                      v-text="'Max : '+Math.round(city_details.consolidated_weather[0].max_temp) + '°C - Min : '+Math.round(city_details.consolidated_weather[0].min_temp) + '°C'"></span>
+                                      v-text="`Max : ${Math.round(city_details.consolidated_weather[0].max_temp)} °C - Min : ${Math.round(city_details.consolidated_weather[0].min_temp)} °C`"></span>
 
                         </div>
                         <div class="col-md-6">
@@ -32,20 +32,18 @@
                     <h5 class="card-title" v-text="getDate(day.applicable_date)"></h5>
                     <div class="card_subtitle">
                         <h6 class="text-muted"
-                            v-text="'Temperature : ' + Math.round(day.the_temp) + '°C'"></h6>
+                            v-text="`Temperature : ${Math.round(day.the_temp)} °C`"></h6>
                         <span v-text="day.weather_state_name" class="text-info"></span>
                     </div>
                     <div class="card-text">
                         <div class="row">
                             <div class="col-md-6">
                                 <span class="lead"
-                                      v-text="'Max : '+Math.round(day.max_temp) + '°C'"></span>
+                                      v-text="`Max : ${Math.round(day.max_temp)} °C`"></span>
                                 -
                                 <span class="lead"
-                                      v-text="'Min : '+Math.round(day.min_temp) + '°C'"> </span>
+                                      v-text="`Max : ${Math.round(day.min_temp)} °C`"> </span>
 
-                            </div>
-                            <div class="col-md-6">
                             </div>
                         </div>
                     </div>
@@ -55,12 +53,12 @@
 
         <!--Not Found Exception-->
         <h2 v-if="notFound" class="text-center mt-3"
-            v-text="'No results were found for : ('+city+'). Try changing the keyword!'"></h2>
+            v-text="`No results were found for : (${city}). Try changing the keyword!`"></h2>
     </div>
 </template>
 
 <script>
-  let self = this;
+    import Router from 'vue-router';
   export default {
     props: ['city', 'woeid', 'consolidated'],
     data() {
@@ -78,24 +76,25 @@
       }
     },
     watch: {
-      city_details: function (val) {
+      city_details: function (val){
         if (val) {
-          self.$emit('notLoading');
+          this.$emit('notLoading');
         }
       }
     },
     created() {
-      if (self.city) {
-        this.getWoeid(self.city)
-      }
-      else if (self.woeid) {
-        this.getCityDetails(self.woeid)
-      }
+      if (this.city) this.getWoeid(this.city);
+      else if (this.woeid) this.getCityDetails(this.woeid);
+      
+      document.body.addEventListener('keyup', (e) => {
+        (e.keyCode === 72 ) ? this.$router.push({ name: 'Home' }) : ''
+      });
     },
     methods: {
       getCityDetails(woeid) {
+        const self = this;
         axios.get(`/weather.php?command=location&woeid=${woeid}`)
-            .then(function (response) {
+            .then((response) => {
               let arr = response.data.consolidated_weather;
               self.consolidatedWeather = arr.splice(1, arr.length);
               self.city_details = response.data;
@@ -103,8 +102,9 @@
             });
       },
       getWoeid(city) {
+        const self = this;
         axios.get(`/weather.php?command=search&keyword=${city}`)
-            .then(function (response) {
+            .then((response) => {
               if (response.data.length > 0) {
                 self.getCityDetails(response.data[0]['woeid']);
               }

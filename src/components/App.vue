@@ -18,7 +18,7 @@
     },
     methods:{
       removeLoading(){
-        self = this;
+        const self = this;
         self.loading = false
       }
     }

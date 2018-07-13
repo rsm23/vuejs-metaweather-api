@@ -24,7 +24,7 @@
     },
     methods: {
       Search() {
-        let self = this;
+        const self = this;
         this.$router.push(`/search/${self.keyword}`);
       }
     }
