@@ -1,10 +1,9 @@
 {
-  "name": "weather-gitesoft",
+  "name": "meta-weather-api",
   "version": "1.0.0",
-  "description": "Weather App Gite-Soft",
-  "author": "Rahmani Saif El Moulouk <cool2309@gmail.com>",
+  "description": "Meta Weather API with VueJS and PHP",
+  "author": "Rahmani Saif El Moulouk <saiflacrimosa@gmail.com>",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "dev": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "watch": "NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",

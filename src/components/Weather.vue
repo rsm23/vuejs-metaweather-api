@@ -54,11 +54,13 @@
         </div>
 
         <!--Not Found Exception-->
-        <h2 v-if="notFound" class="text-center mt-3" v-text="'No results were found for : ('+city+'). Try changing the keyword!'"></h2>
+        <h2 v-if="notFound" class="text-center mt-3"
+            v-text="'No results were found for : ('+city+'). Try changing the keyword!'"></h2>
     </div>
 </template>
 
 <script>
+  let self = this;
   export default {
     props: ['city', 'woeid', 'consolidated'],
     data() {
@@ -67,24 +69,22 @@
         icon_name: null,
         loading: true,
         consolidatedWeather: false,
-        notFound : false
+        notFound: false
       };
     },
     computed: {
       icon() {
-        return 'background: url("https://www.metaweather.com/static/img/weather/png/' + this.icon_name + '.png") no-repeat;background-position-x: 100%;background-position-y: 40%;background-size: 14%;';
+        return `background: url("https://www.metaweather.com/static/img/weather/png/${this.icon_name}.png") no-repeat;background-position-x: 100%;background-position-y: 40%;background-size: 14%;`;
       }
     },
     watch: {
       city_details: function (val) {
-        let self = this;
         if (val) {
           self.$emit('notLoading');
         }
       }
     },
     created() {
-      let self = this;
       if (self.city) {
         this.getWoeid(self.city)
       }
@@ -94,8 +94,7 @@
     },
     methods: {
       getCityDetails(woeid) {
-        let self = this;
-        axios.get('/weather.php?command=location&woeid=' + woeid)
+        axios.get(`/weather.php?command=location&woeid=${woeid}`)
             .then(function (response) {
               let arr = response.data.consolidated_weather;
               self.consolidatedWeather = arr.splice(1, arr.length);
@@ -104,29 +103,29 @@
             });
       },
       getWoeid(city) {
-        let self = this;
-        axios.get('/weather.php?command=search&keyword=' + city)
+        axios.get(`/weather.php?command=search&keyword=${city}`)
             .then(function (response) {
-              if(response.data.length > 0){
+              if (response.data.length > 0) {
                 self.getCityDetails(response.data[0]['woeid']);
-              }else{
+              }
+              else {
                 self.notFound = true;
               }
             });
       },
       redirectCity(woeid) {
-        this.$router.push('/weather/' + woeid)
+        this.$router.push(`/weather/${woeid}`)
       },
       getIcon(iconName) {
         return `background: url(https://www.metaweather.com/static/img/weather/png/${iconName}.png) no-repeat;background-position-x:100%;background-position-y: 40%;background-size: 14%;`
       },
       getDate(date) {
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         let d = new Date(date);
         let year = date.slice(0, 4);
         let currentDate = date.slice(8, 10);
-        return days[d.getDay()] + ', ' + currentDate + ' ' + months[d.getMonth()] + ' ' + year;
+        return `${days[d.getDay()]} ${currentDate} ${months[d.getMonth()]} ${year}`;
       }
     },
   }
